@@ -1,0 +1,9 @@
+create procedure SP_GetTransaction
+@ID varchar(max)
+as
+begin
+select T.IdTransaction, T.IdItem, I.Name, I.Type, T.DateTranscation, T.Qty, T.TotalCost from Tb_T_Transcation as T
+join Tb_M_Item as I on I.IdItem = T.IdItem
+where IdCustomer = @ID
+order by T.IdTransaction
+end

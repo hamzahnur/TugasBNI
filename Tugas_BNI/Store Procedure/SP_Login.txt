@@ -1,0 +1,10 @@
+CREATE  procedure SP_Login
+@Email varchar(50),
+@Password varchar(max)
+as
+begin
+select C.IdCustomer, C.Name, C.Email, R.RoleName from Tb_M_Customer as C
+join Tb_M_Account as AC on C.IdCustomer = AC.IdCustomer
+join Tb_M_Role as R on C.RoleID = R.ID
+where C.Email = @Email and AC.Password = @Password
+end

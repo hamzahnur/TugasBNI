@@ -1,0 +1,6 @@
+create procedure SP_GetItem
+as
+begin
+select * from Tb_M_Item
+where stok > 0
+end

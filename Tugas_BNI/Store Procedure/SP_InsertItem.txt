@@ -1,0 +1,17 @@
+create sequence SQ_Item
+as int
+start with 1
+increment by 1
+go
+
+create or alter procedure SP_InsertItems
+@Name varchar (max),
+@Stok int,
+@Price int,
+@Image varchar (max),
+@Type varchar (max)
+as
+begin 
+insert into Tb_M_Item(IdItem, Name, Stok, Price, Image, Type) 
+values (CONCAT('ITM', NEXT VALUE FOR SQ_Item),@Name,@Stok,@Price,@Image,@Type) 
+end

@@ -1,0 +1,35 @@
+create sequence SQ_Transcation
+as int
+start with 1
+increment by 1
+go
+
+CREATE   procedure SP_InsertTranscation
+@IdCustomer varchar(max),
+@IdItem varchar(max),
+@Date date,
+@TotalCost int,
+@Qty int
+as
+Declare @IDNew varchar(max) = CONCAT('TRN', NEXT VALUE FOR SQ_Transcation)
+Declare @Stok int = (select Stok from Tb_M_Item where IdItem = @IdItem)
+begin 
+if((@Stok - @Qty)>-1)
+begin
+insert into Tb_T_Transcation(IdTransaction, IdCustomer, IdItem, DateTranscation, TotalCost, Qty) 
+values (@IDNew,@IdCustomer, @IdItem, @Date, @TotalCost, @Qty)
+
+Update Tb_M_Item
+set Stok = Stok - @Qty
+where IdItem = @IdItem
+end
+else
+begin
+PRINT 'Stok Habis';
+end
+
+select T.IdTransaction, T.IdItem, T.DateTranscation, T.Qty, T.TotalCost, C.Name, C.Address, I.Name from Tb_T_Transcation as T
+join Tb_M_Customer as C on C.IdCustomer = T.IdCustomer
+join Tb_M_Item as I on I.IdItem = T.IdItem
+where T.IdTransaction = @IDNew
+end

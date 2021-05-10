@@ -1,0 +1,32 @@
+create sequence SQ_Customer
+as int
+start with 1
+increment by 1
+go
+
+CREATE OR ALTER   TRIGGER  TG_InputCustomer ON Tb_M_Customer
+INSTEAD OF INSERT AS 
+BEGIN
+DECLARE @ID varchar(3) = FORMAT(NEXT VALUE FOR SQ_Customer, '000')
+DECLARE @NewID varchar(10) = CONCAT('CUS', @ID)
+	INSERT Tb_M_Customer
+	SELECT @NewID,Name, Email, Phone, Address, RoleID
+	FROM inserted
+
+	INSERT Tb_M_Account
+	SELECT @NewID,'12345'
+	FROM inserted
+	select C.Name, C.Email, AC.Password from Tb_M_Customer as C join
+	Tb_M_Account as AC on AC.IdCustomer = C.IdCustomer
+	where C.IdCustomer = @NewID
+ END
+ go
+ 
+ CREATE or alter PROCEDURE SP_Register
+@Name varchar(50),
+@Email varchar(50)
+AS	
+Begin
+	INSERT INTO Tb_M_Customer(IdCustomer,Name,Email,RoleID)
+	VALUES ( '', @Name, @Email,2)
+End
