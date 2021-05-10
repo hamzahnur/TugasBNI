@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\New folder (6)\\Tugas_BNI\\Tugas_BNI\\API.csproj": {}
+    "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\Tugas_BNI\\API.csproj": {}
   },
   "projects": {
-    "D:\\New folder (6)\\Tugas_BNI\\Tugas_BNI\\API.csproj": {
+    "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\Tugas_BNI\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\New folder (6)\\Tugas_BNI\\Tugas_BNI\\API.csproj",
+        "projectUniqueName": "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\Tugas_BNI\\API.csproj",
         "projectName": "API",
-        "projectPath": "D:\\New folder (6)\\Tugas_BNI\\Tugas_BNI\\API.csproj",
+        "projectPath": "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\Tugas_BNI\\API.csproj",
         "packagesPath": "C:\\Users\\Hamzah\\.nuget\\packages\\",
-        "outputPath": "D:\\New folder (6)\\Tugas_BNI\\Tugas_BNI\\obj\\",
+        "outputPath": "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\Tugas_BNI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

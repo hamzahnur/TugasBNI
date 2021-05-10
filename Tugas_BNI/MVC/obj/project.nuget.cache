@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rJv/JVBzlOztCsEHAjptDPlr54iQclIwwpO8Gwoq/R7LZz8VLqOuGpDPzn62wzK1HdGCLOVa+IDq3orhgiAedQ==",
+  "dgSpecHash": "5yqNWNS/tpk+FnyCvslRvx3mDlea4hMhoHa9du631Btin5rjzEWAy3NWeqEZe1XG1BvPsNRxuAvKb8eO3uNwyg==",
   "success": true,
-  "projectFilePath": "D:\\New folder (6)\\Tugas_BNI\\MVC\\MVC.csproj",
+  "projectFilePath": "D:\\New folder (6)\\TugasBNI\\Tugas_BNI\\MVC\\MVC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Hamzah\\.nuget\\packages\\castle.core\\4.4.1\\castle.core.4.4.1.nupkg.sha512",
     "C:\\Users\\Hamzah\\.nuget\\packages\\dapper\\1.50.2\\dapper.1.50.2.nupkg.sha512",
