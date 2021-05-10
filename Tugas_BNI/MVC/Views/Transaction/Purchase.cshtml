@@ -1,0 +1,266 @@
+﻿@{
+
+    ViewData["Title"] = "Purchase";
+}
+
+<div class="tab-content">
+    <div class="p-3" tabindex="-1" role="dialog">
+        <div class="row">
+            <h2 class="page-header">
+                Purchase
+            </h2>
+        </div>
+        
+        <div class="card p-3" tabindex="-1" role="dialog">
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label">Name Customer :</label>
+                        <span name="Name" id="Name"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-form-label">Address :</label>
+                        <span name="Adress" id="Address"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-right pr-5">
+                <button data-counter="0" id="addItemButton" class="btn btn-primary w-md waves-effect waves-light" data-toggle="modal" data-target="#modal" onclick="data()">
+                    Cari Item
+                </button>
+            </div>
+            <form id="editForm">
+                <div class="p-3 table-responsive" tabindex="-1" role="dialog">
+                    <table class="table align-items-center table-flush" id="Purchase">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID Item</th>
+                                <th>Nama Item</th>
+                                <th>Qty</th>
+                                <th>Type</th>
+                                <th>Harga Satuan</th>
+                                <th>Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th><input type="text" name="IdItem" id="IdItem" readonly><button type="button" data-toggle="modal" data-target="#modal" onclick="data()">cari</button></th>
+                                <th><span name="Nama" id="Nama"></span></th>
+                                <th><input type="number" name="Qty" id="Qty" onchange="total()"></th>
+                                <th><span name="Type" id="Type"></span></th>
+                                <th><input type="number" name="Price" id="Price" hidden><span name="Price2" id="Price2"></span></th>
+                                <th><input name="TotalCost" id="TotalCost" hidden><span name="Jumlah2" id="Jumlah2"></span></th>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="row float-right" style="margin: 25px;">
+                    <button type="submit" class="btn btn-primary" id="save">Beli</button>
+                    <button type="button" class="btn btn-secondary" id="save" onclick="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+            
+    </div>
+</div>
+
+<div class="modal fade " id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="dialog">
+        <div class="modal-content">
+            <form id="ItemForm" name="ItemForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id=" modalLabel"><i class="fas fa-user"></i>  List Item</h5>
+                    <button id="Cancel" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive" tabindex="-1" role="dialog">
+                        <div class="form-row">
+
+                            <table class="table align-items-center table-flush" id="Item">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>ID Item</th>
+                                        <th>Nama Item</th>
+                                        <th>Stok</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script>
+        window.onload = function () {
+            $.ajax({
+                url: "EmpProfile",
+                type: "GET",
+                datatype: 'json',
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader('Authorization', sessionStorage.token);
+                },
+                success: function (data) {
+                    var data = data['result'];
+                    $('#Name').text(data.name);
+                    $('#Address').text(data.address);
+                }
+            });
+        }
+        function data() {
+
+            var t = $('#Item').DataTable({
+
+                "paging": false,
+                "searching": false,
+                "filter": true,
+                "orderMulti": false,
+                "ajax": {
+                    "url": "/Item/GetItem",
+                    "type": "get",
+                    "dataSrc": "result",
+
+                    "beforeSend": function (xhr) {
+                        xhr.setRequestHeader('Authorization', sessionStorage.token);
+                    },
+                },
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "searchable": false,
+                        "orderable": false,
+                    },
+                ],
+                "columns": [
+                    {
+                        "data": null,
+                        "defaultContent": '',
+                    },
+                    { "data": 'idItem' },
+                    { "data": 'name' },
+                    { "data": 'stok' },
+                    { "data": 'price' },
+                    { "data": 'type' },
+                    {
+                        "data": "id",
+                        render: function (data, type, row, meta) {
+                            return '<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Pilih ' + '"  onclick="Pilih(\'' + row['idItem'] + '\')"><i class ="fa fa-edit"></i> Pilih</a> '
+                                
+                        }
+                    }
+                ]
+            });
+            t.on('order.dt search.dt', function () {
+                t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    t.cell(cell).invalidate('dom');
+                });
+            }).draw();
+        }
+
+        function Pilih(idItem) {
+
+            $.ajax({
+                url: "/Item/GetById",
+                type: "GET",
+                data: { 'key': idItem },
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader('Authorization', sessionStorage.token);
+                },
+                success: function (result) {
+              
+                    var data = result['result'];
+                    $('#modal').modal('hide');
+                    $('#IdItem').val(data.idItem);
+                    $('#Nama').text(data.name);
+                    $('#Type').text(data.type);
+                    $('#Price').val(data.price);
+                    $('#Price2').text(data.price);
+                    $('#Qty').attr({
+                        "max": data.stok,
+                        "min": 1
+                    });
+
+                    $('#Item').DataTable().destroy();
+                }
+            });
+        }
+
+        function total() {
+       
+            var b = parseInt(document.getElementById('Price').value) * parseInt(document.getElementById('Qty').value);
+            document.getElementById('TotalCost').value = b;
+            $('#Jumlah2').text(b);
+        }
+
+
+        $('#editForm').submit(function (e) {
+            e.preventDefault();
+            var form = $(this)
+            $.ajax({
+                type: "POST",
+                url: "/Transaction/Insert",
+                data: form.serialize(),
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader('Authorization', sessionStorage.token);
+                },
+                success: function (data) {
+                    if (data != null) {
+                        $('#IdItem').val('');
+                        $('#Nama').text('');
+                        $('#Type').text('');
+                        $('#Price').val('');
+                        $('#Price2').text('');
+                        $('#Qty').val('');
+                        $('#TotalCost').val('');
+                        $('#Jumlah2').text('');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Your data has been changed',
+                            showConfirmButton: true,
+                            timer: 1500
+                        })
+                       
+                        $('#Item').DataTable().destroy();
+                     
+                       
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Your Work cannot be saved!',
+                        })
+                    }
+                }
+            });
+        })
+
+        function cancel() {
+            $('#IdItem').val('');
+            $('#Nama').text('');
+            $('#Type').text('');
+            $('#Price').val('');
+            $('#Price2').text('');
+            $('#Qty').val('');
+            $('#TotalCost').val('');
+            $('#Jumlah2').text('');
+        }
+</script>
+    }

@@ -1,0 +1,324 @@
+﻿@{
+
+    ViewData["Title"] = "Item";
+}
+
+<div class="tab-content">
+    <div class="p-3" tabindex="-1" role="dialog">
+        <div class="row">
+            <h2 class="page-header">
+                List
+                <small>Item</small>
+            </h2>
+        </div>
+        <div class="col-12 text-right pr-5">
+            <button data-counter="0" id="addItemButton" class="btn btn-primary w-md waves-effect waves-light" data-toggle="modal" data-target="#modal" onclick="resetUpdate()">
+                Add Item
+            </button>
+        </div>
+        <hr>
+        <div class="p-3 table-responsive" tabindex="-1" role="dialog">
+            <table class="table align-items-center table-flush" id="Item">
+                <thead class="thead-light">
+                    <tr>
+                        <th>No</th>
+                        <th>ID Item</th>
+                        <th>Name</th>
+                        <th>Stok</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="ItemForm" name="ItemForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id=" modalLabel"><i class="fas fa-user"></i>  Add Item</h5>
+                    <button id="Cancel" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label class="col-form-label">Name :</label>
+                                <input type="text" class="form-control" name="Name" id="Name">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Category :</label>
+                                <div class="col-md-12">
+                                    <select class="form-control" id="Type" name="Type">
+                                        <option value="Handphone & Aksesoris">Handphone & Aksesoris</option>
+                                        <option value="Komputer & Aksesoris">Komputer & Aksesoris</option>
+                                        <option value="Elektronik & Fotografi">Elektronik & Fotografi</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="Phone" class="col-form-label">Stok :</label>
+                                <input type="text" class="form-control" name="Stok" id="Stok">
+                            </div>
+                            <div class="form-group">
+                                <label for="Phone" class="col-form-label">Price :</label>
+                                <input type="text" class="form-control" name="Price" id="Price">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="IdItem" id="IdItem" hidden>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="save">Save Change</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    <script>
+        var isUpdate = 0;
+        $(document).ready(function () {
+
+            var t = $('#Item').DataTable({
+
+                "filter": true,
+                "orderMulti": false,
+                "ajax": {
+                    "url": "/Item/Get",
+                    "type": "get",
+                    "dataSrc": "result",
+                   
+                     "beforeSend": function (xhr) {
+                        xhr.setRequestHeader('Authorization', sessionStorage.token);
+                     },
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        footer: true,
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    'colvis'
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "searchable": false,
+                        "orderable": false,
+                    },
+                ],
+                "columns": [
+                    {
+                        "data": null,
+                        "defaultContent": '',
+                    },
+                    { "data": 'idItem' },
+                    { "data": 'name' },
+                    { "data": 'stok' },
+                    { "data": 'price' },
+                    { "data": 'type' },
+                    {
+                        "data": "id",
+                        render: function (data, type, row, meta) {
+                            return '<a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Edit ' + '"  onclick="Get(\'' + row['idItem'] + '\')"><i class ="fa fa-edit"></i> Edit</a> ' +
+                                '<button class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete ' + '" onclick="Delete(\'' + row['idItem'] + '\')"><i class ="fa fa-trash"></i> Delete</button>'
+                        }
+                    }
+                ]
+            });
+
+            t.on('order.dt search.dt', function () {
+                t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                    t.cell(cell).invalidate('dom');
+                });
+            }).draw();
+        });
+
+        $("#ItemForm").validate({
+            rules: {
+                Name: "required",
+                Stok: "required",
+                Price: "required",
+                Type: "required",
+            },
+
+            submitHandler: function (ItemForm) {
+                var form = $(ItemForm);
+                var urlString;
+                var typeString;
+                if (isUpdate == 1) {
+                    urlString = "/Item/PUT",
+                        typeString = "PUT"
+
+                }
+                else {
+                    urlString = "/Item/Insert",
+                        typeString = "POST"
+                }
+
+
+                    var trans = new Object();
+                    trans.name = $('#Name').val();
+                    trans.type = $('#Type').val();
+                trans.stok = $('#Stok').val();
+                trans.price = $('#Price').val();
+                trans.idItem = $('#IdItem').val();
+
+
+                $.ajax({
+                    type: typeString,
+                    url: urlString,
+                    data: trans,
+                    "beforeSend": function (xhr) {
+                        xhr.setRequestHeader('Authorization', sessionStorage.token);
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data != null) {
+                            $('#IdItem').attr('readonly', false);
+                            $('#modal').modal('hide');
+                            $('#Item').DataTable().ajax.reload();
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Your data has been saved',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                                footer: '<a href>Your Work cannot be saved</a>'
+                            })
+
+                        }
+                    }
+                });
+
+            }
+        });
+
+
+
+
+        function Delete(idItem) {
+            swal.fire({
+                title: 'Are you sure you want to delete ' + idItem + ' ?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Item/Delete",
+                        data: { 'key': idItem },
+                        "beforeSend": function (xhr) {
+                            xhr.setRequestHeader('Authorization', sessionStorage.token);
+                        },
+                        success: function (data) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your data has been deleted.',
+                                'success'
+                            )
+                            $('#Item').DataTable().ajax.reload();
+                        },
+                        error: function (error) {
+                            alert('error;');
+                        },
+                    });
+                }
+            });
+        }
+
+        function Get(idItem) {
+            
+            $.ajax({
+                url: "/Item/GetById",
+                type: "GET",
+                data: { 'key': idItem },
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader('Authorization', sessionStorage.token);
+                },
+                success: function (result) {
+                    $('#modal').modal('show');
+                    var data = result['result'];
+                    $('#Name').val(data.name);
+                    $('#Stok').val(data.stok);
+                    $('#Type').val(data.Type);
+                    $('#Price').val(data.price);
+                    $('#IdItem').val(data.idItem);
+                 
+                    isUpdate = 1;
+                }
+            });
+        }
+
+        function resetUpdate() {
+            isUpdate = 0;
+            $('#ItemForm').trigger('reset');
+        }
+
+        $('#Close').click(function () {
+            $('#IdItem').attr('readonly', false);
+
+        });
+
+        $('#Cancel').click(function () {
+            $('#IdItem').attr('readonly', false);
+
+        });
+
+    </script>
+}

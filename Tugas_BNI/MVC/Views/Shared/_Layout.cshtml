@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Super Market</title>
+    <partial name="_ThemeStyles" />
+</head>
+<body>
+
+    <partial name="_Sidenav" />
+    <div class="main-content">
+        <partial name="Topnav/_Topnav" />
+        <div class="container-fluid mt-2 mb-5">
+            @RenderBody()
+        </div>
+        <footer class="bg-white" style="position: fixed; left: 0; bottom: 0px; width: 100%;">
+            <p class="text-right" style="margin-right: 50px; margin-top: 15px; color: black;">
+                &copy; 2021 - Super Market
+            </p>
+        </footer>
+    </div>
+    <partial name="_ThemeScripts" />
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

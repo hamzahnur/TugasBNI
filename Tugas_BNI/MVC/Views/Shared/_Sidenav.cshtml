@@ -1,0 +1,88 @@
+﻿
+<nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+    <div class="scrollbar-inner">
+
+        <!-- Brand -->
+        <div class="sidenav-header  align-items-center">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <img src="~/img/brand/blue.png" sizes="100px"  alt="...">
+            </a>
+        </div>
+        <div class="navbar-inner">
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+
+                <!-- Collapse header -->
+                <div class="navbar-collapse-header d-md-none">
+                    <div class="row">
+                        <div class="col-6 collapse-brand">
+                            <a href="/">
+                                <img src="~/img/brand/blue.png">
+                            </a>
+                        </div>
+                        <div class="col-6 collapse-close">
+                            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                @if (ViewBag.Role == "Customer")
+                {
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">
+                        <i class="ni ni-tv-2 text-yellow"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Customer" asp-action="Profile">
+                        <i class="ni ni-single-02 text-primary"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Transaction" asp-action="Purchase">
+                        <i class="fas fa-shopping-cart text-default"></i> Purchase
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Transaction" asp-action="History">
+                        <i class="fas fa-history text-default"></i> History
+                    </a>
+                </li>
+
+            </ul>
+                }
+                @if (ViewBag.Role == "Admin")
+                {
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="ni ni-tv-2 text-yellow"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Customer" asp-action="Profile">
+                                <i class="ni ni-single-02 text-primary"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Item" asp-action="List">
+                                <i class="fas fa-database text-default"></i> Item
+                            </a>
+                        </li>
+                       
+                    </ul>
+
+
+                 
+                }
+
+                
+            </div>
+        </div>
+    </div>
+</nav>
